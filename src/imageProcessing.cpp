@@ -3,29 +3,40 @@
 
 imageProcessing::imageProcessing()
 {
+    // 上一次处理的时间戳
 	time_last_process = -1e5;
 
+    // 初始化光流跟踪器和地图跟踪器
 	op_tracker = new opticalFlowTracker();
 	map_tracker = new rgbMapTracker();
 
+    // 图像缩放比例
 	image_resize_ratio = 1.0;
 	image_scale_factor = image_resize_ratio;
 
+    // 跟踪的最大特征点数量
 	maximum_tracked_points = 300;
+    // 设置光流跟踪的窗口大小，这个大小决定了跟踪时搜索邻域的大小
 	track_windows_size = 40;
 
+    // 设置光流跟踪器的最小和最大深度阈值，用于过滤掉距离过远或过近的点
 	tracker_minimum_depth = 0.1;
 	tracker_maximum_depth = 200;
 
+    // 设置光流跟踪器的迭代次数
 	num_iterations = 2;
 
+    // 设置相机测量权重，这可能用于光流跟踪器中的权重计算
 	cam_measurement_weight =  1e-3;
 
+    // 设置是否估计相机内参和外参的标志
 	ifEstimateCameraIntrinsic = true;
 	ifEstimateExtrinsic = true;
 
+    // 是否是第一次处理数据
 	first_data = true;
 
+    // 设置初始协方差矩阵
 	setInitialCov();
 }
 
@@ -39,6 +50,7 @@ void imageProcessing::setImageHeight(int &para)
 	image_height = para;
 }
 
+// 设置相机内参
 void imageProcessing::setCameraIntrinsic(std::vector<double> &v_camera_intrinsic)
 {
 	camera_intrinsic << v_camera_intrinsic[0], v_camera_intrinsic[1], v_camera_intrinsic[2], 
@@ -46,6 +58,7 @@ void imageProcessing::setCameraIntrinsic(std::vector<double> &v_camera_intrinsic
 						v_camera_intrinsic[6], v_camera_intrinsic[7], v_camera_intrinsic[8];
 }
 
+// 设置相机畸变系数
 void imageProcessing::setCameraDistCoeffs(std::vector<double> &v_camera_dist_coeffs)
 {
 	camera_dist_coeffs << v_camera_dist_coeffs[0], v_camera_dist_coeffs[1], v_camera_dist_coeffs[2], 
@@ -62,6 +75,7 @@ void imageProcessing::setExtrinT(Eigen::Vector3d &t)
 	t_imu_camera = t;
 }
 
+// 设置初始协方差矩阵
 void imageProcessing::setInitialCov()
 {
     // Set cov
