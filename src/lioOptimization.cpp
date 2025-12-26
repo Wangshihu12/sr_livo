@@ -522,10 +522,12 @@ void lioOptimization::addPointsToMap(voxelHashMap &map, cloudFrame* p_frame, dou
 {
     if (to_rendering)
     {
+        // 清空最近访问的体素列表
         voxels_recent_visited_temp.clear();
         std::vector<voxelId>().swap(voxels_recent_visited_temp);
     }
 
+    // 记录添加点之前最近访问的体素数量
     int number_of_voxels_before_add = voxels_recent_visited_temp.size();
 
     int point_idx = 0;
@@ -553,6 +555,7 @@ void lioOptimization::addPointsToMap(voxelHashMap &map, cloudFrame* p_frame, dou
     points_world->clear();
 }
 
+// 在三维映射中删除超过距离的体素
 void lioOptimization::removePointsFarFromLocation(voxelHashMap &map, const Eigen::Vector3d &location, double distance)
 {
     std::vector<voxel> voxels_to_erase;
@@ -571,6 +574,7 @@ void lioOptimization::removePointsFarFromLocation(voxelHashMap &map, const Eigen
     std::vector<voxel>().swap(voxels_to_erase);
 }
 
+// 计算三维哈希映射中包含点的总数
 size_t lioOptimization::mapSize(const voxelHashMap &map)
 {
     size_t map_size(0);
